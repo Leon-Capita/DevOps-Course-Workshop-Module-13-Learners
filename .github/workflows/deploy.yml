@@ -10,9 +10,8 @@ jobs:
         DOCKERHUB_USERNAME: leonmilcap
         # SET THESE IN GITHUB
         DOCKERHUB_TOKEN: '${{ secrets.DOCKERHUB_TOKEN }}'
-        #AZURE_WEBHOOK: '${{ secrets.AZURE_WEBHOOK }}'
-        AZURE_WEBHOOK: https://$cohort28-leo-mil-order-processing-app:l9SyySPpJbeAkeKQn4xkajsKEBGtTi6Nlgvo1y1oeHDoAt1aEt0s4S6Mwia2@cohort28-leo-mil-order-processing-app.scm.azurewebsites.net/api/registry/webhook
-    # DECIDE WHETHER YOU WANT A BRANCH CHECK - if so remove the other "if"
+        AZURE_WEBHOOK: '${{ secrets.AZURE_WEBHOOK }}'
+        # DECIDE WHETHER YOU WANT A BRANCH CHECK - if so remove the other "if"
     # if: github.ref == 'refs/heads/master'
     if: github.repository != 'corndeladmin/DevOps-Course-Workshop-Module-13-Learners'
     steps:

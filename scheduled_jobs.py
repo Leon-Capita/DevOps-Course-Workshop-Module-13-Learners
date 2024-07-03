@@ -5,6 +5,7 @@ import requests
 import logging
 logging.basicConfig(level=logging.INFO)
 
+
 def initialise_scheduled_jobs(app):
     scheduler = BackgroundScheduler()
     scheduler.add_job(

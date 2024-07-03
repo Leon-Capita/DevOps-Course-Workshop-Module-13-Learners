@@ -39,7 +39,6 @@ def index():
 def count():
     return { 'count': count_orders() }
 
-
 @app.route("/new", methods=["POST"])
 def new_order():
     product = request.json["product"]

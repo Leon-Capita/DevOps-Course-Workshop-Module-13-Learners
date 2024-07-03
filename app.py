@@ -32,9 +32,11 @@ app.config.from_object(Config)
 #     }
 # }
 
-logger = logging.getLogger(__name__)
-logger.addHandler(AzureLogHandler)
-logger.warning('Hello, World!')
+# logger = logging.getLogger(__name__)
+# logger.addHandler(AzureLogHandler)
+# logger.warning('Hello, World!')
+
+app.logger.addHandler(AzureLogHandler())
 
 initialise_database(app)
 initialise_scheduled_jobs(app)

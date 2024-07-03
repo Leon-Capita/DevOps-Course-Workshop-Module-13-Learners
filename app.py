@@ -9,8 +9,32 @@ from products import create_product_download
 import requests
 import logging
 logging.basicConfig(level=logging.INFO)
+from opencensus.ext.azure.trace_exporter import AzureExporter
+from opencensus.ext.flask.flask_middleware import FlaskMiddleware
+from opencensus.trace.samplers import ProbabilitySampler
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+
 app = Flask(__name__)
+middleware = FlaskMiddleware(
+    app,
+    exporter=AzureExporter(),
+    sampler=ProbabilitySampler(rate=1.0),
+)
 app.config.from_object(Config)
+
+# app.config['OPENCENSUS'] = {
+#     'TRACE': {
+#         'SAMPLER': 'opencensus.trace.samplers.ProbabilitySampler(rate=1.0)',
+#         'EXPORTER': '''opencensus.ext.azure.trace_exporter.AzureExporter(
+#             connection_string="InstrumentationKey=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}",
+#         )''',
+#         'EXCLUDELIST_PATHS': ['https://example.com'],  #<--- These sites will not be traced if a request is sent to it.
+#     }
+# }
+
+logger = logging.getLogger(__name__)
+logger.addHandler(AzureLogHandler)
+logger.warning('Hello, World!')
 
 initialise_database(app)
 initialise_scheduled_jobs(app)

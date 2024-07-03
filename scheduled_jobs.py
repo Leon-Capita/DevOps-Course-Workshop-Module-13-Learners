@@ -19,7 +19,8 @@ def initialise_scheduled_jobs(app):
 
 def process_orders(app):
     with app.app_context():
-        orders = get_queue_of_orders_to_process()
+        try: orders = get_queue_of_orders_to_process()
+        except: app.logger.exception("Error processing order {id}".format(id = order.id))
         if len(orders) == 0:
             return
 
@@ -30,16 +31,23 @@ def process_orders(app):
             "customer": order.customer,
             "date": order.date_placed.isoformat(),
         }
-
-        response = requests.post(
-            app.config["FINANCE_PACKAGE_URL"] + "/ProcessPayment",
-            json=payload
-        )
-        app.logger.info("Response from endpoint: " + response.text)
-        response.raise_for_status()
         
-        order.set_as_processed()
-        save_order(order)
+        try:
+            response = requests.post(
+                app.config["FINANCE_PACKAGE_URL"] + "/ProcessPayment",
+                json=payload
+            )
+        except:app.logger.exception("Error processing order {id}".format(id = order.id))
+
+        app.logger.info("Response from endpoint: " + response.text)
+        try: response.raise_for_status()
+        except: app.logger.exception("Error processing order {id}".format(id = order.id))
+        
+        try: order.set_as_processed()
+        except: app.logger.exception("Error processing order {id}".format(id = order.id))
+
+        try: save_order(order)
+        except: app.logger.exception("Error processing order {id}".format(id = order.id))
 
 def get_queue_of_orders_to_process():
     allOrders = get_all_orders()
